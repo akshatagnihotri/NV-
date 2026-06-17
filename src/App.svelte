@@ -35,6 +35,9 @@
 </ul>
 
 <footer>
+	<a href="https://akshatdataanalystportfolio.lovable.app/" target="_blank" rel="noopener noreferrer">
+		Made by Akshat.
+	</a>
 </footer>
 
 <style>
