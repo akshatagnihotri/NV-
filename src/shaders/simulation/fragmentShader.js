@@ -14,7 +14,6 @@ uniform sampler2D texture9;
 uniform sampler2D texture10;
 uniform sampler2D texture11;
 uniform sampler2D texture12;
-uniform sampler2D texture13;
 uniform float timer;
 
 varying vec2 vUv;
@@ -156,11 +155,6 @@ void main() {
 	if (timer > 24.0 && timer <= 25.0) {
 		float normalizedTimer = timer - 24.0;
 		mixTextures(texture12, randomTexture, normalizedTimer);
-	}
-
-	if (timer > 25.0 && timer <= 26.0) {
-		float normalizedTimer = timer - 25.0;
-		mixTextures(randomTexture, texture13, normalizedTimer);
 	}
 }
 `;

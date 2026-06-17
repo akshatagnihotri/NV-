@@ -9,7 +9,7 @@
 
 <svelte:window bind:scrollY bind:innerHeight />
 
-<div style="height: {`${innerHeight * 26}px`}" />
+<div style="height: {`${innerHeight * 25}px`}" />
 
 <nav>
 	<h1>NV /</h1>

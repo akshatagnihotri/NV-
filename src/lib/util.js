@@ -164,24 +164,60 @@ const getRandomData = () => {
   return vector;
 };
 
-const getTextTexture = (text, font) => {
-	const textGeo = new TextGeometry(text, {
-		font,
-		size: 1.0,
-		height: 0.2,
-		curveSegments: 12,
-	});
+const getTextTexture = (text) => {
+	const width = 512;
+	const height = 512;
+	const canvas = document.createElement('canvas');
+	canvas.width = width;
+	canvas.height = height;
+	const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-	textGeo.center();
+	ctx.fillStyle = '#000000';
+	ctx.fillRect(0, 0, width, height);
+
+	ctx.fillStyle = '#ffffff';
+	ctx.font = 'bold 350px "Microsoft YaHei", sans-serif';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillText(text, width / 2, height / 2);
+
+	const imgData = ctx.getImageData(0, 0, width, height).data;
+	const validPixels = [];
+
+	for (let i = 0; i < width * height; i++) {
+		if (imgData[i * 4] > 128) {
+			const x = i % width;
+			const y = Math.floor(i / width);
+			validPixels.push({ x, y });
+		}
+	}
 
 	const data = new Float32Array(256 * 256 * 4);
-	const points = randomPointsInBufferGeometry(textGeo, 256 * 256);
+	const numValid = validPixels.length;
 
-	for (let i = 0, j = 0; i < data.length; i += 4, j += 1) {
-		data[i] = points[j].x;
-		data[i + 1] = points[j].y;
-		data[i + 2] = points[j].z;
-		data[i + 3] = 1.0;
+	for (let i = 0; i < 256 * 256; i++) {
+		let p;
+		if (numValid > 0) {
+			p = validPixels[Math.floor(Math.random() * numValid)];
+		} else {
+			p = { x: width / 2, y: height / 2 };
+		}
+		
+		// Distribute randomly within the pixel to make it look smooth and continuous
+		const px = p.x + (Math.random() - 0.5);
+		const py = p.y + (Math.random() - 0.5);
+
+		// Adjust scaling
+		const mappedX = (px / width) * 2.5 - 1.25;
+		const mappedY = -((py / height) * 2.5 - 1.25);
+		
+		const mappedZ = (Math.random() - 0.5) * 0.2;
+
+		const idx = i * 4;
+		data[idx] = mappedX;
+		data[idx + 1] = mappedY;
+		data[idx + 2] = mappedZ;
+		data[idx + 3] = 1.0;
 	}
 
 	const texture = new DataTexture(data, 256, 256, RGBAFormat, FloatType);

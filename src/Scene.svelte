@@ -3,7 +3,6 @@
 		OrbitControls,
 		Three,
 		useFrame,
-		useLoader,
 		useThrelte,
 	} from '@threlte/core';
 	import { HTML } from '@threlte/extras';
@@ -12,7 +11,7 @@
 		ShaderMaterial,
 		AdditiveBlending,
 	} from 'three';
-	import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+	import { onMount } from 'svelte';
 
 	import FBO from './lib/fbo';
 	import { getRandomTexture, getTextTexture } from './lib/util.js';
@@ -24,7 +23,6 @@
 	import particleFragment from './shaders/particles/fragmentShader';
 
 	export let timer;
-	let font;
 	let fbo;
 
 	const { renderer, scene } = useThrelte();
@@ -41,15 +39,14 @@
 		{ autostart: false }
 	);
 
-	const fontLoader = useLoader(FontLoader, () => new FontLoader());
-	fontLoader.load('src/assets/yahei_bold.json', (f) => {
-		font = f;
+	onMount(() => {
 		init();
 		start();
 	});
 
 	const init = () => {
-		const textTextures = data.map((item) => getTextTexture(item.hanzi, font));
+		// Use hanzi again since the new getTextTexture uses HTML Canvas
+		const textTextures = data.map((item) => getTextTexture(item.hanzi));
 
 		const randomTexture = getRandomTexture();
 
@@ -69,7 +66,6 @@
 				texture10: { value: textTextures[10] },
 				texture11: { value: textTextures[11] },
 				texture12: { value: textTextures[12] },
-				texture13: { value: textTextures[13] },
 				timer: { value: 0 },
 			},
 			vertexShader: simulationVertex,
